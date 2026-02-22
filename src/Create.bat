@@ -16,11 +16,10 @@ echo Creating patch from original to modded...
 "xdelta3.exe" -e -s "Buckshot Roulette.exe" "BuckshotRoulette_Modded.exe" "BRML-E.xdelta"
 
 :: Check result
-if exist "BuckshotRoulette_ModLoader.xdelta" (
+if exist "BRML-E.xdelta" (
     echo.
     echo ============== SUCCESS! ==============
     echo Patch created: BRML-E.xdelta
-    echo Size: %~z2 bytes
 ) else (
     echo.
     echo ============== ERROR ==============
@@ -28,4 +27,5 @@ if exist "BuckshotRoulette_ModLoader.xdelta" (
 )
 
 echo.
+
 pause
