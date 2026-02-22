@@ -32,43 +32,50 @@ func _setup_ui():
 	panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	center.add_child(panel)
 	
-	# Scroll container
-	var scroll = ScrollContainer.new()
-	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	panel.add_child(scroll)
+	# Main vertical layout for the panel
+	var panel_vbox = VBoxContainer.new()
+	panel_vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	panel_vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	panel.add_child(panel_vbox)
 	
-	# Main container
-	var vbox = VBoxContainer.new()
-	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_theme_constant_override("separation", 10)
-	scroll.add_child(vbox)
-	
-	# Title
+	# Title - OUTSIDE scroll container (fixed at top)
 	var title = Label.new()
 	title.text = "INSTALLED MODS"
 	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	title.add_theme_font_size_override("font_size", 28)
 	title.add_theme_color_override("font_color", Color(1, 0.9, 0.5))
 	title.custom_minimum_size.y = 60
-	vbox.add_child(title)
+	panel_vbox.add_child(title)
+	
+	# Scroll container for mod entries
+	var scroll = ScrollContainer.new()
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel_vbox.add_child(scroll)
+	
+	# Container for mod entries inside scroll
+	var vbox = VBoxContainer.new()
+	vbox.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	vbox.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	vbox.add_theme_constant_override("separation", 10)
+	scroll.add_child(vbox)
 	
 	# Get and display mods
 	var mods = _get_mods()
 	_add_mod_entries(vbox, mods)
 	
-	# Spacer to push close button down
-	var spacer = Control.new()
-	spacer.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	vbox.add_child(spacer)
+	# Bottom section (fixed at bottom, not scrollable)
+	var bottom_section = VBoxContainer.new()
+	bottom_section.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	bottom_section.add_theme_constant_override("separation", 10)
+	panel_vbox.add_child(bottom_section)
 	
 	# Close button
 	var btn_container = HBoxContainer.new()
 	btn_container.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	btn_container.alignment = HBoxContainer.ALIGNMENT_CENTER
-	vbox.add_child(btn_container)
+	bottom_section.add_child(btn_container)
 	
 	var close_btn = Button.new()
 	close_btn.text = "CLOSE"
@@ -80,7 +87,7 @@ func _setup_ui():
 	# Bottom padding
 	var bottom_pad = Control.new()
 	bottom_pad.custom_minimum_size.y = 15
-	vbox.add_child(bottom_pad)
+	bottom_section.add_child(bottom_pad)
 	
 	# Focus
 	close_btn.grab_focus()
